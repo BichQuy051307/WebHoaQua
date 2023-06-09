@@ -64,10 +64,10 @@ class LoginController extends Controller
             return response()->json(['is' => 'login-failed', 'error' => $validator->errors()->all()]);
         }
         if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            if (Auth::guard('admin')->user()->role == 'admin') {
+            // if (Auth::guard('admin')->user()->role == 'admin') {
                 return response()->json(['is' => 'login-success']);
-            }
-            Auth::logout();
+            // }
+            // Auth::logout();
         }
         return response()->json(['is' => 'incorrect', 'incorrect' => 'Sai tên đăng nhập hoặc mật khẩu!']);
     }

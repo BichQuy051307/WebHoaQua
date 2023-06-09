@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AdminMiddleware
 {
@@ -17,10 +18,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->role != 'admin')
-        {
-            return redirect('/home')->with('status', 'Access denied! You are not admin.');
+        if (auth()->user()->role == 'admin') {
+            return $next($request);
         }
-        return $next($request);
+
+        return abort(Response::HTTP_FORBIDDEN);
     }
 }

@@ -100,49 +100,58 @@ Route::get('/gioi-thieu', function () {
 });
 
 // Create route for admin dashboard
-Route::get('/admin/login', function () {
-    return view('admin.login');
-});
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-});
+// Route::get('/admin/login', function () {
+//     return view('admin.login');
+// });
+// Route::get('/admin/dashboard', function () {
+//     return view('admin.dashboard');
+// });
 Route::get('/admin/table', function () {
     return view('admin.basic-table');
 });
 
+Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/admin/login', [LoginController::class, 'postLoginAdmin']);
 // admin
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm']);
-    Route::post('/login', [LoginController::class, 'postLoginAdmin']);
-    Route::get('/logout', [LoginController::class, 'logoutAdmin']);
+Route::group([
+    'prefix' => 'admin',
+    'middleware' => 'auth:admin',
+], function () {
+    Route::group([
+        'middleware' => 'isAdmin',
+    ], function () {
+        Route::get('/logout', [LoginController::class, 'logoutAdmin']);
+        // categories
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        });
+        Route::resource('category', CategoryController::class);
+        Route::post('/update-category', [CategoryController::class, 'edit']);
+        Route::get('/new/category', function () {
+            return view('admin.category.new-category');
+        });
 
-    // categories
-    Route::resource('category', CategoryController::class);
-    Route::post('/update-category', [CategoryController::class, 'edit']);
-    Route::get('/new/category', function () {
-        return view('admin.category.new-category');
+        // products
+        Route::resource('product', ProductController::class);
+        Route::post('/update-product', [ProductController::class, 'edit']);
+        Route::get('/new/product', function () {
+            return view('admin.product.new-product');
+        });
+
+        // users
+        Route::resource('user', UserController::class);
+        Route::post('/update-user', [UserController::class, 'edit']);
+
+        // orders
+        Route::get('/order', [OrderController::class, 'index']);
+        Route::get('/order/{order_id}', [OrderController::class, 'show']);
+        Route::get('/order_note/{id}', [OrderController::class, 'note']);
+        Route::put('/order/{id}', [OrderController::class, 'update']);
+        Route::put('/order/cancel/{id}', [OrderController::class, 'cancelOrder']);
+        // Route::delete('/order/{id}', [OrderController::class, 'destroy']);
+        Route::get('/order_pending', [OrderController::class, 'pending']);
+        Route::get('/order_shipped', [OrderController::class, 'shipped']);
+        Route::get('/order_delivered', [OrderController::class, 'delivered']);
+        Route::get('/order_cancel', [OrderController::class, 'cancel']);
     });
-
-    // products
-    Route::resource('product', ProductController::class);
-    Route::post('/update-product', [ProductController::class, 'edit']);
-    Route::get('/new/product', function () {
-        return view('admin.product.new-product');
-    });
-
-    // users
-    Route::resource('user', UserController::class);
-    Route::post('/update-user', [UserController::class, 'edit']);
-
-    // orders
-    Route::get('/order', [OrderController::class, 'index']);
-    Route::get('/order/{order_id}', [OrderController::class, 'show']);
-    Route::get('/order_note/{id}', [OrderController::class, 'note']);
-    Route::put('/order/{id}', [OrderController::class, 'update']);
-    Route::put('/order/cancel/{id}', [OrderController::class, 'cancelOrder']);
-    // Route::delete('/order/{id}', [OrderController::class, 'destroy']);
-    Route::get('/order_pending', [OrderController::class, 'pending']);
-    Route::get('/order_shipped', [OrderController::class, 'shipped']);
-    Route::get('/order_delivered', [OrderController::class, 'delivered']);
-    Route::get('/order_cancel', [OrderController::class, 'cancel']);
 });
