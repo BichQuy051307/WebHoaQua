@@ -90,6 +90,7 @@ class CheckoutController extends Controller
             $data['phone'] = $request->phone;
             $data['address'] = $request->address;
             $data['customer_notes'] = $request->note;
+            $data['user_id'] = auth()->user()->id;
             //tạo hoặc cập nhật đối tượng $order    
             $order = Order::updateOrCreate($data);
 
