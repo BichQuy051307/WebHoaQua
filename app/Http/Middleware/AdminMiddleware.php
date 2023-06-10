@@ -22,6 +22,16 @@ class AdminMiddleware
             return $next($request);
         }
 
+        if (auth()->user()->role == 'staff') {
+            $routes = ['product', 'category', 'order', 'logout'];
+            foreach ($routes as $route) {
+                if (str_contains($request->route()->uri(), $route)) {
+                    return $next($request);
+                }
+            }
+            return abort(Response::HTTP_FORBIDDEN);
+        }
+
         return abort(Response::HTTP_FORBIDDEN);
     }
 }

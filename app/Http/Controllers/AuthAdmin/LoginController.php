@@ -65,7 +65,9 @@ class LoginController extends Controller
         }
         if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
             // if (Auth::guard('admin')->user()->role == 'admin') {
-                return response()->json(['is' => 'login-success']);
+                $message = 'login-' .auth()->guard('admin')->user()->role. '-success';
+
+                return response()->json(['is' => $message]);
             // }
             // Auth::logout();
         }
