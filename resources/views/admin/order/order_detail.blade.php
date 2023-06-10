@@ -30,6 +30,7 @@
                                     <p style="font-weight: 600;">FROM:</p>
                                     <p>Ban quản lý</p>
                                     <p>Email: {{ auth()->user()->email ?? "fujifruit@gmail.com" }}</p>
+                                    <p>Name: {{ auth()->user()->name ?? "" }}</p>
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
