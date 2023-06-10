@@ -1,6 +1,6 @@
 @extends('layouts.admin') @section('content')
     <section class="content" style="font-size: 14px;">
-        @if (isset($order) && isset($orders_detail))
+        @if (isset($order))
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
@@ -29,8 +29,8 @@
                                 <div class="col-sm-4 invoice-col">
                                     <p style="font-weight: 600;">FROM:</p>
                                     <p>Ban quản lý</p>
-                                    <p>Email: {{ auth()->user()->email ?? "fujifruit@gmail.com" }}</p>
-                                    <p>Name: {{ auth()->user()->name ?? "" }}</p>
+                                    <p>Email: {{ $order->censor ? $order->censor->email : "" }}</p>
+                                    <p>Name: {{ $order->censor ? $order->censor->name : "" }}</p>
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
@@ -71,8 +71,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (isset($orders_detail))
-                                                @foreach ($orders_detail as $item)
+                                            @if (isset($order->orderDetails))
+                                                @foreach ($order->orderDetails as $item)
                                                     <tr>
                                                         <td>{{ $item->name }}</td>
                                                         <td class="text-center">{{ $item->code }}</td>

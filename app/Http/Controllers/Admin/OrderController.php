@@ -44,9 +44,10 @@ class OrderController extends Controller
     //sẽ hiển thị chi tiết của một đơn đặt hàng dựa trên order_id đã được cung cấp.
     public function show($order_id)
     {
-        $order = Order::where('order_id', $order_id)->first();
-        $orders_detail = OrderDetail::where('order_id', $order_id)->get();
-        return view('admin.order.order_detail', ['order' => $order, 'orders_detail' => $orders_detail]);
+        $relationship = ['orderDetails', 'censor:id,email,name'];
+        $order = Order::with($relationship)->where('order_id', $order_id)->first();
+
+        return view('admin.order.order_detail', ['order' => $order]);
     }
     //cập nhật trạng thái của một đơn đặt hàng dựa trên dữ liệu gửi lên và lưu trạng thái đã thay đổi vào cơ sở dữ liệu.
     public function update(Request $request)
@@ -56,6 +57,7 @@ class OrderController extends Controller
             $order = Order::find($data['id']);
             if ($order->status == 0) { //Nếu trạng thái là 0, tức là chưa giao hàng, thì nó sẽ được cập nhật thành 1, tức là đã giao hàng. 
                 $order->status = 1;
+                $order->censor_id = auth()->guard('admin')->user()->id ?? "";
             } else if ($order->status == 1) {
                 $order->status = 2;
             } else {
